@@ -1,25 +1,30 @@
+
+
 from items import Weapon
 
 
 class Character:
     """Represents a character in the RPG"""
 
+    # ------------------------------------------------------------------
+    # Task 3: __init__ accepts an optional weapon
+    # ------------------------------------------------------------------
     def __init__(self, name: str, hp_max: int = 100, damage: int = 10,
-                weapon: Weapon | None = None ) -> None:
+                 weapon: Weapon | None = None) -> None:
         """
         Initialise the Character
 
         Args:
             name (str): The name of the character.
             hp_max (int): Max hit points (default = 100)
-            damage (int): Damage dealt when character attacks (default = 10)
+            damage (int): Base damage dealt when attacking without a weapon (default = 10)
+            weapon (Weapon | None): Equipped weapon (default = None)
         """
         self.name = name
         self._hp = hp_max  # Note: _hp indicates private attribute
         self.hp_max = hp_max
         self.damage = damage
         self.weapon = weapon
-
 
     # ------------------------------------------------------------------
     # Task 1a: take_damage()
@@ -34,7 +39,7 @@ class Character:
         """
         if amount < 0:
             raise ValueError("Damage amount can not be negative")
-        self._hp = max(self._hp - amount, 0) 
+        self._hp = max(self._hp - amount, 0)
 
     # ------------------------------------------------------------------
     # Task 1b: heal()
@@ -51,12 +56,11 @@ class Character:
             raise ValueError("Heal amount can not be negative")
         self._hp = min(self._hp + amount, self.hp_max)
 
-
     # ------------------------------------------------------------------
-    # Task 1c: attack() - must NOT touch target._hp directly
+    # Task 1c + Task 3: attack() - uses take_damage(), and weapon if equipped
     # ------------------------------------------------------------------
     def attack(self, target: "Character") -> None:
-        """Attack and deal damage to target character"""
+        """Attack target, using weapon damage if a weapon is equipped"""
         if self.weapon is not None:
             dmg = self.weapon.roll_damage()
         else:
@@ -66,10 +70,10 @@ class Character:
     # ------------------------------------------------------------------
     # Task 1d: is_alive (read-only property)
     # ------------------------------------------------------------------
-    @property 
+    @property
     def is_alive(self) -> bool:
         """True if the character has more than 0 HP, otherwise False"""
-        return self.hp > 0 
+        return self.hp > 0
 
     # ------------------------------------------------------------------
     # Unchanged from lecture (except the repr bug fix)
@@ -90,6 +94,69 @@ class Character:
     def hp(self) -> int:
         """Public read-only property to inspect HP without allowing direct, unsafe edits."""
         return self._hp
+
+
+# ----------------------------------------------------------------------
+# Task 4a: Warrior subclass (defensive specialist)
+# ----------------------------------------------------------------------
+class Warrior(Character):
+    """A defensive character whose armor reduces incoming damage"""
+
+    def __init__(self, name: str, hp_max: int = 100, damage: int = 10,
+                 weapon: Weapon | None = None, armor: int = 5) -> None:
+        """
+        Initialise the Warrior
+
+        Args:
+            name, hp_max, damage, weapon: Same as Character
+            armor (int): Reduces all incoming damage by this amount (default = 5)
+        """
+        super().__init__(name, hp_max, damage, weapon)
+        self.armor = armor
+
+    def take_damage(self, amount: int) -> None:
+        """Reduce incoming damage by armor before applying it (never below 0)"""
+        if amount < 0:
+            raise ValueError("Damage amount can not be negative")
+        reduced = max(amount - self.armor, 0)
+        super().take_damage(reduced)
+
+#---------------------------------------------------------------------------
+#Task 4b: Mage subclass (resocurce based attacker)
+#---------------------------------------------------------------------------
+class Mage(Character):
+    """A magic user who spends mana on powerful spell attacks"""
+
+    SPELL_COST = 10     # mana needed for one spell
+    MANA_REGEN = 5      # mana restored after a base attack
+
+    def __init__(self, name: str, hp_max: int = 100, damage: int = 10,
+                 weapon: Weapon | None = None, mana_max: int = 30) -> None:
+        """
+        Initialise the Mage
+
+        Args:
+            name, hp_max, damage, weapon: Same as Character
+            mana_max (int): Maximum mana (default = 30). The mage starts with full mana.
+        """
+        super().__init__(name, hp_max, damage, weapon)
+        self.mana_max = mana_max
+        self.mana = mana_max
+
+    def attack(self, target: "Character") -> None:
+        """
+        Cast a spell if enough mana, otherwise do a base attack.
+
+        - mana >= 10: spend 10 mana, deal double base damage (ignores weapon)
+        - mana < 10: normal attack (uses weapon if equipped), restore 5 mana
+        """
+        if self.mana >= self.SPELL_COST:
+            self.mana -= self.SPELL_COST
+            target.take_damage(self.damage * 2)
+        else:
+            super().attack(target)
+            self.mana = min(self.mana + self.MANA_REGEN, self.mana_max)
+   
 
 
 if __name__ == "__main__":
@@ -129,8 +196,26 @@ if __name__ == "__main__":
     d.attack(c)
     print(c.hp)        # expected: 90 (no weapon: base damage 10)
 
-       
+    # Tests for Task 4a
+    w = Warrior("Wenche")
+    a.attack(w)            # Arne: 10 damage, minus 5 armor
+    print(w.hp)            # expected: 95
 
+    weak = Character("Weak", damage=3)
+    weak.attack(w)         # 3 damage, minus 5 armor -> 0
+    print(w.hp)            # expected: 95 (armor blocks everything)
 
+        # Tests for Task 4b
+    m = Mage("Mia")
+    t = Character("Target")
+    for i in range(6):
+        m.attack(t)
+        print(f"Attack {i + 1}: target hp={t.hp}, mana={m.mana}")
 
-
+    staff = Weapon("Staff", Dice(sides=4))
+    m2 = Mage("Merlin", weapon=staff, mana_max=10)
+    t2 = Character("Target2")
+    m2.attack(t2)
+    print(t2.hp)       # expected: 80 (spell: 2 x 10, staff not used)
+    m2.attack(t2)
+    print(t2.hp)       # expected: between 76 and 79 (base attack with staff: 1-4)

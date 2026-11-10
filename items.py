@@ -1,14 +1,25 @@
+# Items module - Deliverable 3, Task 3
+
 from dice import Dice
 
 
-class Weapon: 
+class Weapon:
+    """Represents a weapon that deals damage based on a dice roll"""
 
     def __init__(self, name: str, damage_dice: Dice) -> None:
+        """
+        Initialise the Weapon
+
+        Args:
+            name (str): The name of the weapon
+            damage_dice (Dice): The dice used to calculate damage
+        """
         self.name = name
         self.damage_dice = damage_dice
 
     def roll_damage(self) -> int:
-            return self.damage_dice.roll()
+        """Roll the weapon's damage dice and return the damage dealt"""
+        return self.damage_dice.roll()
 
     def __repr__(self) -> str:
         """Representation of weapon object, e.g. Weapon(name=Sword, damage_dice=Dice(sides=8))"""
@@ -23,4 +34,9 @@ if __name__ == "__main__":
     print(sword.roll_damage())   # expected: a number from 1 to 8
 
     rolls = [sword.roll_damage() for _ in range(1000)]
-    print(min(rolls), max(rolls))   # expected: 1 8
+    print(min(rolls), max(rolls))   # expected: 1 8"
+
+
+
+
+  
