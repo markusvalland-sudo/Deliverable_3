@@ -28,7 +28,7 @@ class Weapon:
 
 if __name__ == "__main__":
     # Quick tests for Task 3 - run with: python items.py
-    sword = Weapon("Sword", Dice(sides=8))
+    sword = Weapon("Sword", Dice(sides=20))
 
     print(sword)                 # expected: Weapon(name=Sword, damage_dice=Dice(sides=8))
     print(sword.roll_damage())   # expected: a number from 1 to 8

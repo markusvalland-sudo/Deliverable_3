@@ -37,3 +37,10 @@ if __name__ == "__main__":
     print(f"Winner: {winner.name}")
     print(f"{hero.name}: {hero.hp} HP, {enemy.name}: {enemy.hp} HP")
     # expected: one of them has 0 HP, the other has more than 0
+
+        # Battle without weapons
+    hero2 = Warrior("Jørgen")
+    enemy2 = Mage("Markus")
+    winner2 = Battle(hero2, enemy2).simulate_battle()
+    print(f"Without weapons - Winner: {winner2.name}")
+    print(f"{hero2.name}: {hero2.hp} HP, {enemy2.name}: {enemy2.hp} HP")

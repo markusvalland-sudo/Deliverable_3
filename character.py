@@ -7,10 +7,10 @@ class Character:
     """Represents a character in the RPG"""
 
     # ------------------------------------------------------------------
-    # Task 3: __init__ accepts an optional weapon
+    # Task 3: From lecture, updated in task 3
     # ------------------------------------------------------------------
     def __init__(self, name: str, hp_max: int = 100, damage: int = 10,
-                 weapon: Weapon | None = None) -> None:
+                 weapon: Weapon | None = None) -> None: 
         """
         Initialise the Character
 
@@ -186,7 +186,7 @@ if __name__ == "__main__":
     # Tests for Task 3
     from dice import Dice
 
-    sword = Weapon("Sword", Dice(sides=8))
+    sword = Weapon("Sword", Dice(sides=20))
     c = Character("Cecilie", weapon=sword)
     d = Character("Dag")
 
@@ -212,7 +212,7 @@ if __name__ == "__main__":
         m.attack(t)
         print(f"Attack {i + 1}: target hp={t.hp}, mana={m.mana}")
 
-    staff = Weapon("Staff", Dice(sides=4))
+    staff = Weapon("Staff", Dice(sides=20))
     m2 = Mage("Geir Eskil", weapon=staff, mana_max=10)
     t2 = Character("Target2")
     m2.attack(t2)
