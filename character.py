@@ -213,7 +213,7 @@ if __name__ == "__main__":
         print(f"Attack {i + 1}: target hp={t.hp}, mana={m.mana}")
 
     staff = Weapon("Staff", Dice(sides=4))
-    m2 = Mage("Merlin", weapon=staff, mana_max=10)
+    m2 = Mage("Geir Eskil", weapon=staff, mana_max=10)
     t2 = Character("Target2")
     m2.attack(t2)
     print(t2.hp)       # expected: 80 (spell: 2 x 10, staff not used)
