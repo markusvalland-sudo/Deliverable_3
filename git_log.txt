@@ -1,4 +1,6 @@
-* ce7bb8a - Markus Valland, 2 seconds ago : Final version of Deliverable 3
+* 33cdd90 - Markus Valland, 8 seconds ago : Remove generated files, PDF/HTML and lecture file
+* ff5d040 - Markus Valland, 13 minutes ago : git hub log
+* ce7bb8a - Markus Valland, 14 minutes ago : Final version of Deliverable 3
 * a35de1c - Markus Valland, 7 hours ago : notebook ferdig
 * 2c9bf3d - Markus Valland, 11 hours ago : 5 ferdig
 * efcdd07 - Markus Valland, 2 days ago : Remove __pycache__ and .DS_Store from repo
